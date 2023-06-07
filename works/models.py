@@ -7,12 +7,14 @@ from datetime import datetime
 
 
 class Character(models.Model):
-    name = models.CharField(max_length=50, unique=True, editable=False)
+    name = models.CharField(max_length=50, unique=True)
 
 
 class Relationship(models.Model):
     character1 = models.ForeignKey(Character, on_delete=models.CASCADE, related_name='character1')
     character2 = models.ForeignKey(Character, on_delete=models.CASCADE, related_name='character2')
+
+    # TODO: validate record uniqueness
 
 
 class Fanfic(models.Model):
@@ -37,13 +39,13 @@ class Fanfic(models.Model):
     categories = models.ManyToManyField(Categories)
     tags = models.ManyToManyField(Tags, blank=True)
     characters = models.ManyToManyField(Character, blank=True)
-    relashionships = models.ManyToManyField(Relationship, blank=True)  # TODO: unique?
+    relashionships = models.ManyToManyField(Relationship, blank=True)
 
     # Likes
     # Chapters
     # Bookmarks
 
-    def validate_published_date(self):  # TODO: when are date validators used
+    def validate_published_date(self):  # TODO: at what moment are date validators used
         if self.published_date != datetime.today().strftime('%Y-%m-%d'):
             raise ValidationError(
                 _("%(published_date) hasn't come yet"),
